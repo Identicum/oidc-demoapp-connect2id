@@ -10,7 +10,7 @@
 		<filter-class>com.identicum.oidc.OidcFilter</filter-class>
 		<init-param>
 			<param-name>redirectUri</param-name>
-			<param-value>{REDIRECT_URI}</param-value>
+			<param-value>${redirect_uri}</param-value>
 		</init-param>
  		<init-param>
              <param-name>authorizationRequestUriParameter</param-name>
@@ -18,19 +18,19 @@
          </init-param>
 		<init-param>
 			<param-name>metadataEndpoint</param-name>
-			<param-value>{OIDC_DISCOVERY_ENDPOINT}</param-value>
+			<param-value>${oidc_discovery_endpoint}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>clientId</param-name>
-			<param-value>{CLIENT_ID}</param-value>
+			<param-value>${client_id}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>clientSecret</param-name>
-			<param-value>{CLIENT_SECRET}</param-value>
+			<param-value>${client_secret}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>scopes</param-name>
-			<param-value>openid,profile</param-value>
+			<param-value>${scopes}</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
