@@ -23,7 +23,7 @@
 	    <div class="container">
 	        <div class="navbar-header">
 	            <a class="navbar-brand" rel="home" href="#" title="Personal">
-	                <img style="max-width:100px; margin-top: -7px;" src="resources/img/logo-tenaris.png">  
+	                <img style="max-width:100px; margin-top: -7px;" src="resources/img/logo.png">  
 	            </a>
 	        </div>
 	        <div class="navbar-nav">
