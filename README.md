@@ -31,3 +31,7 @@ The build process to compile the source code is based in Apache Maven. To create
 ## Run
 ### WAR
 To execute in a web container like Tomcat, simply copy the file to the webapps folder or deploy to your application server following standard procedures.
+
+### Docker
+The demo app can run a as Docker container.
+Dockerfile and instructions documented [here](docker/)
