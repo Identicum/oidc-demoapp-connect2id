@@ -56,14 +56,14 @@ import net.minidev.json.JSONObject;
 public class OidcClient
 {
 	private final static Logger logger = LoggerFactory.getLogger(OidcClient.class);
-	
+
 	private URI redirectURI;
 	private String authorizationRequestURIParameter;
 	private ClientID clientId;
 	private Secret clientSecret;
 	private Scope scope;
 	private URI postLogoutURI;
-	
+
 
 	private OIDCProviderMetadata providerMetadata;
 
@@ -106,12 +106,12 @@ public class OidcClient
 	{
 		this.scope = scope;
 	}
-	
+
 	public void setScopes(String scopes)
 	{
 		this.scope = Scope.parse(scopes);
 	}
-	
+
 	public String getAuthorizationRequestURIParameter() {
 		return authorizationRequestURIParameter;
 	}
@@ -119,7 +119,7 @@ public class OidcClient
 	public void setAuthorizationRequestURIParameter(String authorizationRequestURIParameter) {
 		this.authorizationRequestURIParameter = authorizationRequestURIParameter;
 	}
-	
+
 	public void discoverMetadata(String endpoint)
 	{
 		try
@@ -142,7 +142,7 @@ public class OidcClient
 	{
 		return this.providerMetadata.getIssuer();
 	}
-		
+
 	private JWKSet getJWKSet()
 	{
 		JWKSet jwkset = null;
@@ -153,44 +153,44 @@ public class OidcClient
 		}
 		return jwkset;
 	}
-	
+
 	public JSONObject validateIdToken(JWT idToken) {
 		return validateIdToken(idToken, getExpectedIssuer(), (JWSAlgorithm) idToken.getHeader().getAlgorithm());
 	}
-	
+
 	public Boolean algorithmIsSupported(Algorithm alg)
 	{
 		List<JWSAlgorithm> supportedAlgs = this.providerMetadata.getIDTokenJWSAlgs();
 		return supportedAlgs.contains(alg);
 	}
-	
+
 	public JSONObject validateIdToken(JWT idToken, Issuer iss, JWSAlgorithm jwsAlg)
-	{	
+	{
 		if (! algorithmIsSupported(idToken.getHeader().getAlgorithm()) ) {
 			throw new RuntimeException("Invalid token algorithm, the algorithm " + idToken.getHeader().getAlgorithm() + "is not supported" );
-		}			
-		
-		IDTokenValidator validator = new IDTokenValidator(iss, this.getClientId(), jwsAlg, this.getJWKSet());			
+		}
+
+		IDTokenValidator validator = new IDTokenValidator(iss, this.getClientId(), jwsAlg, this.getJWKSet());
 		JSONObject jsonObject = null;
 		try {
 			IDTokenClaimsSet claims = validator.validate(idToken, null);
-			logger.debug("The Id token is valid, the token subject is: " + claims.getSubject());	
-			jsonObject = claims.toJSONObject();			
-		} 
+			logger.debug("The Id token is valid, the token subject is: " + claims.getSubject());
+			jsonObject = claims.toJSONObject();
+		}
 		catch (BadJOSEException e) {
 			e.printStackTrace();
 			 // Invalid signature or claims (iss, aud, exp).
 			throw new RuntimeException("Invalid signature or claims (iss, aud, exp): " + e.getMessage());
-			
+
 		} catch (JOSEException e) {
 		    // Internal processing exception
 			e.printStackTrace();
 			throw new RuntimeException("Invalid signature: " + e.getMessage());
 		}
-				
+
 		return jsonObject;
 	}
-		
+
 	public AuthenticationSuccessResponse getAuthenticationResponse(HttpServletRequest request)
 	{
 		logger.info("Parsing authentication response");
@@ -213,35 +213,34 @@ public class OidcClient
 		return (AuthenticationSuccessResponse) authResp;
 
 	}
-	
+
 	public void requestOIDCEndSession(JWT idToken) throws IOException
 	{
 		LogoutRequest request = new LogoutRequest(providerMetadata.getEndSessionEndpointURI(), idToken, this.postLogoutURI, new State());
 		request.toHTTPRequest().send();
 	}
-	
+
 	public OIDCTokenResponse requestTokensWithAuthorizationCode(AuthorizationCode authCode)
 	{
-		logger.info("Requesting token with authorization code received");
-		
-		TokenRequest tokenReq = new TokenRequest( providerMetadata.getTokenEndpointURI(), 
-				new ClientSecretBasic(this.clientId, this.clientSecret),
-				new AuthorizationCodeGrant(authCode, this.redirectURI));
+		java.net.URI tokenEndpointURI = providerMetadata.getTokenEndpointURI();
+		ClientSecretBasic clientSecretBasic = new ClientSecretBasic(this.clientId, this.clientSecret);
+		TokenRequest tokenReq = new TokenRequest(tokenEndpointURI, clientSecretBasic, new AuthorizationCodeGrant(authCode, this.redirectURI));
+		logger.info("Requesting token with authorization code: " + authCode + " to endpoint: " + tokenEndpointURI.toString() + " using credentials: " + clientSecretBasic);
 
 		HTTPResponse tokenHTTPResp = null;
 		TokenResponse tokenResponse = null;
-		try 
+		try
 		{
 			tokenHTTPResp = tokenReq.toHTTPRequest().send();
 			tokenResponse = OIDCTokenResponseParser.parse(tokenHTTPResp);
-			if (tokenResponse instanceof TokenErrorResponse) 
+			if (tokenResponse instanceof TokenErrorResponse)
 			{
 				ErrorObject error = ((TokenErrorResponse) tokenResponse).getErrorObject();
 				logger.error("Token response is error: " + error.getDescription());
 				throw new RuntimeException("Error on OIDC Negotiation");
 			}
-		} 
-		catch (Exception e) 
+		}
+		catch (Exception e)
 		{
 			logger.error("Error getting token with authorization code: " + e.getMessage(), e);
 			throw new RuntimeException("Error on OIDC Negotiation");
@@ -249,7 +248,7 @@ public class OidcClient
 
 		return (OIDCTokenResponse) tokenResponse;
 	}
-	
+
 	public URI getPostLogoutURI() {
 		return postLogoutURI;
 	}
@@ -258,33 +257,33 @@ public class OidcClient
 		this.postLogoutURI = postLogoutURI;
 	}
 
-	public URI getAuthenticationRequestURI(State state, Nonce nonce) 
+	public URI getAuthenticationRequestURI(State state, Nonce nonce)
 	{
 		logger.info("Building OIDC request URI");
 		AuthenticationRequest authenticationRequest = new AuthenticationRequest( providerMetadata.getAuthorizationEndpointURI(),
-				new ResponseType(ResponseType.Value.CODE), 
+				new ResponseType(ResponseType.Value.CODE),
 				this.scope,
-				this.clientId, 
+				this.clientId,
 				this.redirectURI,
-				state, 
+				state,
 				nonce);
 		URI uri = authenticationRequest.toURI();
-		
+
 		if(!this.getAuthorizationRequestURIParameter().isEmpty()) {
 			try {
 				logger.debug("Triying to add custom parameters to Authentication Request URI: " + this.getAuthorizationRequestURIParameter());
 				String newQuery = uri.getQuery() + "&" + this.getAuthorizationRequestURIParameter();
-				return new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), newQuery, uri.getFragment()); 
-			} 
+				return new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), newQuery, uri.getFragment());
+			}
 			catch (URISyntaxException e) {
 				logger.error("Unable to append custom parameters to Authentication Request URI " + e.getMessage());
 			}
 		}
-		
+
 		return uri;
 	}
-	
-	
+
+
 	public JSONObject requestUserInfo(BearerAccessToken accessToken)
 	{
 		UserInfoRequest userInfoReq = new UserInfoRequest(providerMetadata.getUserInfoEndpointURI(), accessToken);
