@@ -6,7 +6,6 @@
 	<display-name>Archetype Created Web Application</display-name>
 		<filter>
 		<filter-name>Login Filter</filter-name>
-		
 		<filter-class>com.identicum.oidc.OidcFilter</filter-class>
 		<init-param>
 			<param-name>redirectUri</param-name>
@@ -32,7 +31,15 @@
 			<param-name>scopes</param-name>
 			<param-value>${scopes}</param-value>
 		</init-param>
+		<init-param>
+			<param-name>appPostLogoutRedirectURI</param-name>
+			<param-value>${appPostLogoutRedirectURI}</param-value>
+		</init-param>
 	</filter>
+	<filter>
+		<filter-name>Logout Filter</filter-name>
+		<filter-class>com.identicum.oidc.OidcLogoutFilter</filter-class>
+	</filter>		
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<url-pattern>/menu/*</url-pattern>
@@ -40,6 +47,10 @@
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<url-pattern>/oauth/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Logout Filter</filter-name>
+		<url-pattern>/oidc/logout</url-pattern>
 	</filter-mapping>
 	<session-config>
 		<session-timeout>180</session-timeout>

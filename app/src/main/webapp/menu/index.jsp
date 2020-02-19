@@ -39,7 +39,8 @@
 	        </div>
 	        <div class="navbar-nav">
 	        	<a class="nav-item" href="#"><span class="fa fa-user"></span> <%= tokenClaims.getAsString("sub") %> </a>
-	        	<a class="nav-item" href="../logout.jsp"><span class="fa fa-sign-out"></span> Logout</a>
+				<!-- <a class="nav-item" href="../logout.jsp"><span class="fa fa-sign-out"></span> Logout</a> -->
+				<a class="nav-item" href="../oidc/logout"><span class="fa fa-sign-out"></span> Logout</a>
 	        </div>	
    		 </div>
    	</div>

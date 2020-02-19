@@ -1,8 +1,6 @@
 package com.identicum.oidc;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -28,10 +26,6 @@ import com.nimbusds.jwt.JWT;
  */
 public class OidcLogoutFilter implements Filter{
 	
-	private final static String PROP_APP_POST_LOGOUT_URI = "appPostLogoutURI";
-	
-	private OidcClient client = null;
-	
 	private final static Logger logger = LoggerFactory.getLogger(OidcLogoutFilter.class);	
 	
 	@Override
@@ -45,12 +39,14 @@ public class OidcLogoutFilter implements Filter{
 		HttpServletRequest request = (HttpServletRequest) servletRequest;	
 		HttpSession mySession = request.getSession();
 		
-		if(mySession != null) {	
+		OidcClient oidcClient = (OidcClient) mySession.getAttribute("oidc_client");
+				
+		if(mySession != null ) {	
 			JWT idToken = (JWT) mySession.getAttribute("id_token");
-			// response.setHeader("Authorization", "Basic " + mySession.getAttribute("access_token"));
+			//response.setHeader("Authorization", "Basic " + mySession.getAttribute("access_token"));
 			mySession.invalidate();
-			logger.info("Redirecting to IDP end session endpoint");
-			this.client.requestOIDCEndSession(idToken);
+			logger.info("Request OIDC EndSession, Post Logout Redirect URI: " + oidcClient.getPostLogoutURI().toString());
+			oidcClient.requestOIDCEndSession(idToken);
 		}
 		else
 		{
@@ -61,20 +57,6 @@ public class OidcLogoutFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		try {
-			client = new OidcClient();
-			client.setPostLogoutURI(new URI(this.getProperty(filterConfig, PROP_APP_POST_LOGOUT_URI, "")));
-		}
-		catch (URISyntaxException ue)
-		{
-			logger.error("Error creating filter", ue);
-		}	
+		// TODO Auto-generated method stub
 	}
-	
-	private String getProperty(FilterConfig filterConfig, String propertyName, String defaultValue)
-	{
-		String value = filterConfig.getInitParameter(propertyName);
-		return (value == null) ? defaultValue : value;
-	}
-
 }

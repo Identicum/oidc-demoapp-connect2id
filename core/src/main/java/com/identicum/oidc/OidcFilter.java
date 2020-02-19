@@ -90,7 +90,9 @@ public class OidcFilter implements Filter
 				logger.info("Requesting User info");
 				mySession.setAttribute(USERINFO, this.client.requestUserInfo(accessToken));								
 				//}
-				
+
+				// Share oidc client configuration for OIDC Logout Filter
+				mySession.setAttribute("oidc_client", this.client);
 				
 				String pageURL = request.getContextPath(); // Default page				
 				// Verifico si tengo en sesión la página original que el usuario intentó acceder
@@ -137,6 +139,7 @@ public class OidcFilter implements Filter
 			this.client.setClientId( new ClientID(this.getRequiredProperty(filterConfig, "clientId")));
 			this.client.setClientSecret(new Secret( this.getRequiredProperty(filterConfig, "clientSecret")));
 			this.client.setScopes( this.getProperty(filterConfig, "scopes", "profile,openid") );
+			this.client.setPostLogoutURI(new URI(this.getProperty(filterConfig, "appPostLogoutRedirectURI", "")));
 
 			String endpointConfiguration = this.getRequiredProperty(filterConfig, "metadataEndpoint");
 			this.client.discoverMetadata(endpointConfiguration);
