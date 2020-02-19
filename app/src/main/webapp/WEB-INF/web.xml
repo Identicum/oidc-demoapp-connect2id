@@ -14,7 +14,7 @@
 		</init-param>
  		<init-param>
              <param-name>authorizationRequestUriParameter</param-name>
-             <param-value></param-value>
+             <param-value>${auth_request_uri_param}</param-value>
          </init-param>
 		<init-param>
 			<param-name>metadataEndpoint</param-name>
