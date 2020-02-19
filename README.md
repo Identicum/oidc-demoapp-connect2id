@@ -8,7 +8,7 @@ OIDC demo contains two modules: core and app.
 Let's start describing them:
 
 *core:* (com.identicum.oidc:oidc-core-c2id)
-This folder contains a maven project with Java filters in charge of doing the OpenID Connect Authentication and Logout process.
+This folder contains a maven project with Java filters in charge of doing the OpenID Connect Authentication and Logout (RP-Initiated Logout) process.
 
 *app:* (com.identicum.oicd.apps.:oidc-demoapp-c2id)
 This folder contains a maven project with a jsp app used to learn how the OIDC process works.
