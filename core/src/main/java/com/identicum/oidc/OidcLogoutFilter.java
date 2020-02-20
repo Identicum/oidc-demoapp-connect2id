@@ -1,6 +1,7 @@
 package com.identicum.oidc;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,12 +10,14 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 
 /***
  * Filtro que realiza la funcionalidad de logout.
@@ -36,22 +39,18 @@ public class OidcLogoutFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 		
-		HttpServletRequest request = (HttpServletRequest) servletRequest;	
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+
 		HttpSession mySession = request.getSession();
 		
 		OidcClient oidcClient = (OidcClient) mySession.getAttribute("oidc_client");
 				
-		if(mySession != null ) {	
-			JWT idToken = (JWT) mySession.getAttribute("id_token");
-			//response.setHeader("Authorization", "Basic " + mySession.getAttribute("access_token"));
-			mySession.invalidate();
-			logger.info("Request OIDC EndSession, Post Logout Redirect URI: " + oidcClient.getPostLogoutURI().toString());
-			oidcClient.requestOIDCEndSession(idToken);
-		}
-		else
-		{
-			logger.warn("Session not found");
-		}
+		JWT idToken = (JWT) mySession.getAttribute("id_token");
+		mySession.invalidate();
+		URI logoutUri = oidcClient.requestOIDCEndSession(idToken).toURI();
+		logger.info("Request OIDC EndSession " + logoutUri.toString());
+		response.sendRedirect(logoutUri.toString());
 		return;
 	}
 

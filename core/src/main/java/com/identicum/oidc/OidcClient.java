@@ -214,10 +214,10 @@ public class OidcClient
 
 	}
 
-	public void requestOIDCEndSession(JWT idToken) throws IOException
+	public LogoutRequest requestOIDCEndSession(JWT idToken) throws IOException
 	{
 		LogoutRequest request = new LogoutRequest(providerMetadata.getEndSessionEndpointURI(), idToken, this.postLogoutURI, new State());
-		request.toHTTPRequest().send();
+		return request;
 	}
 
 	public OIDCTokenResponse requestTokensWithAuthorizationCode(AuthorizationCode authCode)
