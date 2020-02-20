@@ -18,9 +18,17 @@ Build `identicum/oidc-demoapp-connect2id` from source:
 
 Run the image, binding associated ports, and defining your custom variables as environment variables:
 
+    export DISCOVERY_ENDPOINT=https://idp.identicum.com/.well-known/openid-configuration
+    export CLIENT_ID=*some_client_id*
+    export CLIENT_SECRET=*some_client_secret*
+    export REDIRECT_URI=https://demoapp.identicum.com/oidc-demoapp-c2id/oauth/callback
+    export SCOPES=openid,profile
+    export LOGOUT_REDIRECT_URI=https://demoapp.identicum.com/oidc-demoapp-c2id/logout.jsp
+    export ADDTL_AUTHORIZE_PARAMS=
+
     docker run -d \
-	    -p 8080:8080 \
-	    -e "JAVA_OPTS=-Dscopes=openid,profile -Dclient_id=client-id -Dclient_secret=client-secret -Doidc_discovery_endpoint=https://openid_provider_base_url/.well-known/openid-configuration -Dredirect_uri=http://demoapp/oidc-demoapp-c2id/oauth/callback" \
+        -p 8080:8080 \
+        -e "JAVA_OPTS=-Doidc_discovery_endpoint=${DISCOVERY_ENDPOINT} -Dclient_id=${CLIENT_ID} -Dclient_secret=${CLIENT_SECRET}  -Dredirect_uri=${REDIRECT_URI} -Dscopes=${SCOPES} -DappPostLogoutRedirectURI=${LOGOUT_REDIRECT_URI}" -Dauth_request_uri_param=${ADDTL_AUTHORIZE_PARAMS}  \
         identicum/oidc-demoapp-connect2id
 
 ##### Other optional JAVA_OPTS:
