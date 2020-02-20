@@ -33,13 +33,13 @@
 		</init-param>
 		<init-param>
 			<param-name>appPostLogoutRedirectURI</param-name>
-			<param-value>${appPostLogoutRedirectURI}</param-value>
+			<param-value>${post_logout_redirect_uri}</param-value>
 		</init-param>
 	</filter>
 	<filter>
 		<filter-name>Logout Filter</filter-name>
 		<filter-class>com.identicum.oidc.OidcLogoutFilter</filter-class>
-	</filter>		
+	</filter>
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<url-pattern>/menu/*</url-pattern>
@@ -57,5 +57,5 @@
 	</session-config>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>	
+	</welcome-file-list>
 </web-app>

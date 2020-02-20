@@ -28,7 +28,7 @@ Run the image, binding associated ports, and defining your custom variables as e
 
     docker run -d \
         -p 8080:8080 \
-        -e "JAVA_OPTS=-Doidc_discovery_endpoint=${DISCOVERY_ENDPOINT} -Dclient_id=${CLIENT_ID} -Dclient_secret=${CLIENT_SECRET}  -Dredirect_uri=${REDIRECT_URI} -Dscopes=${SCOPES} -DappPostLogoutRedirectURI=${LOGOUT_REDIRECT_URI}" -Dauth_request_uri_param=${ADDTL_AUTHORIZE_PARAMS}  \
+        -e "JAVA_OPTS=-Doidc_discovery_endpoint=${DISCOVERY_ENDPOINT} -Dclient_id=${CLIENT_ID} -Dclient_secret=${CLIENT_SECRET}  -Dredirect_uri=${REDIRECT_URI} -Dscopes=${SCOPES} -Dpost_logout_redirect_uri=${LOGOUT_REDIRECT_URI}" -Dauth_request_uri_param=${ADDTL_AUTHORIZE_PARAMS}  \
         identicum/oidc-demoapp-connect2id
 
 ##### Other optional JAVA_OPTS:
