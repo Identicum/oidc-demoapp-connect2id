@@ -13,3 +13,5 @@ COPY --from=build-env /workspace/demoapp/app/target/oidc-demoapp-c2id.war /tmp/
 RUN unzip -qq /tmp/oidc-demoapp-c2id.war -d /usr/local/tomcat/webapps/oidc-demoapp-c2id && \
   rm -f /tmp/oidc-demoapp-c2id.war && \
   echo "<% response.sendRedirect(\"/oidc-demoapp-c2id/\"); %>" > webapps/ROOT/index.jsp
+
+HEALTHCHECK --timeout=5s CMD curl --fail http://localhost:8080/oidc-demoapp-c2id/ || exit 1
