@@ -1,6 +1,6 @@
 
 # oidc-demoapp-c2id
-OpenID Connect demo app using Connect2id OIDC Java Library.
+OpenID Connect demo app using [Connect2id OIDC Java Library](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk).
 
 ## Getting started
 OIDC demo contains two modules: core and app.
