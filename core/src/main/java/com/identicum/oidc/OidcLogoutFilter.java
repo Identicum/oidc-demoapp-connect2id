@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.nimbusds.jwt.JWT;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 
 /***
  * Filtro que realiza la funcionalidad de logout.

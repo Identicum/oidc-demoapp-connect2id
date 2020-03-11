@@ -35,6 +35,18 @@
 			<param-name>appPostLogoutRedirectURI</param-name>
 			<param-value>${post_logout_redirect_uri}</param-value>
 		</init-param>
+		<init-param>
+			<param-name>enableRequestParameter</param-name>
+			<param-value>${enable_request_parameter}</param-value>
+		</init-param>
+		<init-param>
+			<param-name>requestObjectSigningAlg</param-name>
+			<param-value>${request_object_signing_alg}</param-value>
+		</init-param>
+		<init-param>
+			<param-name>skipSSLCertValidation</param-name>
+			<param-value>${skip_ssl_cert_validation}</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>Logout Filter</filter-name>
@@ -55,6 +67,7 @@
 	<session-config>
 		<session-timeout>180</session-timeout>
 	</session-config>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

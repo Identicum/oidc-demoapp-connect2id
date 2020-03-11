@@ -98,7 +98,7 @@
         <configuration>
           <server>localhost</server>
           <url>http://localhost:8080/manager/text</url>
-          <path>/oidc-demo-c2id</path>
+          <path>/oidc-demoapp-c2id</path>
         </configuration>
       </plugin>
     </plugins>

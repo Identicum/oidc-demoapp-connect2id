@@ -21,6 +21,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
 import com.nimbusds.openid.connect.sdk.Nonce;
@@ -33,6 +34,7 @@ public class OidcFilter implements Filter
 	private final static Logger logger = LoggerFactory.getLogger(OidcFilter.class);
 	
 	public final static String STATE = "state";
+	public final static String PCKE_CODE_VERIFIER = "pkce_code_verifier";
 	public final static String ACCESS_TOKEN = "access_token";
 	public final static String ID_TOKEN = "id_token";
 	public final static String USER_CLAIMS= "user_claims";
@@ -51,7 +53,7 @@ public class OidcFilter implements Filter
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-		// Valido si tengo una sesión existente
+		// Check if i have an existing session
 		HttpSession mySession = request.getSession(true);
 		if (mySession.getAttribute(ID_TOKEN) == null 
 				&& mySession.getAttribute(ACCESS_TOKEN) == null)
@@ -69,15 +71,22 @@ public class OidcFilter implements Filter
 				}
 						
 				logger.info("Code received. Requesting access_token and id_token");
-				OIDCTokenResponse accessTokenResponse = this.client.requestTokensWithAuthorizationCode(authResponse.getAuthorizationCode());
-				
+				OIDCTokenResponse accessTokenResponse;
+				if(client.isPublic()) {
+					accessTokenResponse = this.client.requestTokensWithAuthorizationCode(authResponse.getAuthorizationCode(), (CodeVerifier) mySession.getAttribute(PCKE_CODE_VERIFIER));
+				}
+				else
+				{
+					accessTokenResponse = this.client.requestTokensWithAuthorizationCode(authResponse.getAuthorizationCode());
+				}
+				logger.info("Tokens returned: {}",  accessTokenResponse.getTokens());
 				BearerAccessToken accessToken = accessTokenResponse.getTokens().getBearerAccessToken();		
 				mySession.setAttribute(ACCESS_TOKEN, accessToken.getValue());
 		
 				if(this.client.getScope().contains("openid") && accessTokenResponse.getOIDCTokens() != null)
 				{
 					JWT idToken = accessTokenResponse.getOIDCTokens().getIDToken();
-					logger.info("Validating id_token");
+					logger.info("Validating id_token {} ", idToken.getParsedString());
 					JSONObject userClaims = this.client.validateIdToken(idToken);
 					
 					logger.info("Getting user's claims from id_token");
@@ -88,6 +97,7 @@ public class OidcFilter implements Filter
 				//else
 				//{	
 				logger.info("Requesting User info");
+				//TODO: Check if access token has JWT format
 				mySession.setAttribute(USERINFO, this.client.requestUserInfo(accessToken));								
 				//}
 
@@ -95,7 +105,7 @@ public class OidcFilter implements Filter
 				mySession.setAttribute("oidc_client", this.client);
 				
 				String pageURL = request.getContextPath(); // Default page				
-				// Verifico si tengo en sesión la página original que el usuario intentó acceder
+				// Check if a i have a goto page in session
 				if(mySession.getAttribute(GOTO) != null) {
 					pageURL = (String) mySession.getAttribute(GOTO);
 					mySession.removeAttribute(GOTO);
@@ -110,13 +120,21 @@ public class OidcFilter implements Filter
 				logger.info("Start OIDC negotiation");
 				State state = new State();
 				Nonce nonce = new Nonce();
-				String redirectTo = this.client.getAuthenticationRequestURI(state, nonce).toString();
+				URI redirectTo;
+				if(this.client.isPublic()) {
+					CodeVerifier codeVerifier = new CodeVerifier();
+					redirectTo = this.client.getAuthenticationRequestURI(state, nonce, codeVerifier);
+					mySession.setAttribute(PCKE_CODE_VERIFIER, codeVerifier);
+				}
+				else {
+					redirectTo = this.client.getAuthenticationRequestURI(state, nonce);
+				}
+
 				mySession.setAttribute(STATE, state);
 				String pageURL = request.getRequestURI().toString() + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
-				logger.debug("Keeping original page request in session: {} ", pageURL);
 				mySession.setAttribute(GOTO, pageURL);
-				logger.info("Redirecting user to the OIDC Server:" + redirectTo);
-				response.sendRedirect(redirectTo);
+				logger.info("Redirecting user to: " + redirectTo);
+				response.sendRedirect(redirectTo.toString());
 				return;
 			}
 		}
@@ -133,20 +151,25 @@ public class OidcFilter implements Filter
 		logger.info("Initializating OIDC Filter...");
 		this.client = new OidcClient(); 
 		try
-		{
+		{	
 			this.client.setRedirectURI( new URI(this.getRequiredProperty(filterConfig, "redirectUri")));
 			this.client.setAuthorizationRequestURIParameter( this.getProperty(filterConfig, "authorizationRequestUriParameter","") );
 			this.client.setClientId( new ClientID(this.getRequiredProperty(filterConfig, "clientId")));
-			this.client.setClientSecret(new Secret( this.getRequiredProperty(filterConfig, "clientSecret")));
+			this.client.setClientSecret(new Secret( this.getProperty(filterConfig, "clientSecret","")));
 			this.client.setScopes( this.getProperty(filterConfig, "scopes", "profile,openid") );
 			this.client.setPostLogoutURI(new URI(this.getProperty(filterConfig, "appPostLogoutRedirectURI", "")));
-
-			String endpointConfiguration = this.getRequiredProperty(filterConfig, "metadataEndpoint");
-			this.client.discoverMetadata(endpointConfiguration);
+			this.client.setSkipSSLCertValidation(Boolean.parseBoolean(this.getProperty(filterConfig, "skipSSLCertValidation", "false")));
+			this.client.setRequestParameter(Boolean.parseBoolean(this.getProperty(filterConfig, "enableRequestParameter", "false")));
+			this.client.setRequestObjectSigningAlg(this.getProperty(filterConfig, "requestObjectSigningAlg", "none"));
+			this.client.setMetadataEndpoint(this.getRequiredProperty(filterConfig, "metadataEndpoint"));
+			logger.debug("OIDC Client configuration: {}", this.client.toString());
+			this.client.discoverMetadata();
 		}
 		catch (URISyntaxException ue)
+
 		{
 			logger.error("Error creating filter", ue);
+			throw new RuntimeException("Invalid URI sintax, unable to initialize OIDC configuration:" +  ue.getMessage(), ue);
 		}
 	}
 	
@@ -164,7 +187,7 @@ public class OidcFilter implements Filter
 			throw new RuntimeException("Parameter " + propertyName + " is required");
 		return value;
 	}
-	
+
 	private String getProperty(FilterConfig filterConfig, String propertyName, String defaultValue)
 	{
 		String value = filterConfig.getInitParameter(propertyName);
