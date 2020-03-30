@@ -9,23 +9,23 @@
 		<filter-class>com.identicum.oidc.OidcFilter</filter-class>
 		<init-param>
 			<param-name>redirectUri</param-name>
-			<param-value>${redirect_uri}</param-value>
+			<param-value>${oidc.redirect_uri}</param-value>
 		</init-param>
  		<init-param>
              <param-name>authorizationRequestUriParameter</param-name>
-             <param-value>${auth_request_uri_param}</param-value>
+             <param-value>${oidc.auth_request_uri_param}</param-value>
          </init-param>
 		<init-param>
 			<param-name>metadataEndpoint</param-name>
-			<param-value>${oidc_discovery_endpoint}</param-value>
+			<param-value>${oidc.discovery_endpoint}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>clientId</param-name>
-			<param-value>${client_id}</param-value>
+			<param-value>${oidc.client_id}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>clientSecret</param-name>
-			<param-value>${client_secret}</param-value>
+			<param-value>${oidc.client_secret}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>scopes</param-name>
@@ -33,19 +33,19 @@
 		</init-param>
 		<init-param>
 			<param-name>appPostLogoutRedirectURI</param-name>
-			<param-value>${post_logout_redirect_uri}</param-value>
+			<param-value>${oidc.post_logout_redirect_uri}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>enableRequestParameter</param-name>
-			<param-value>${enable_request_parameter}</param-value>
+			<param-value>${oidc.enable_request_parameter}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>requestObjectSigningAlg</param-name>
-			<param-value>${request_object_signing_alg}</param-value>
+			<param-value>${oidc.request_object_signing_alg}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>skipSSLCertValidation</param-name>
-			<param-value>${skip_ssl_cert_validation}</param-value>
+			<param-value>${oidc.skip_ssl_cert_validation}</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -67,7 +67,7 @@
 	<session-config>
 		<session-timeout>180</session-timeout>
 	</session-config>
-	
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
