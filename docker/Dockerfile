@@ -6,7 +6,7 @@ RUN mvn install -DskipTests
 # ############################################################################
 # Build runtime image
 FROM identicum/centos-tomcat:latest
-MAINTAINER Gustavo J Gallardo <ggallard@identicum.com>
+LABEL maintainer="Gustavo J Gallardo <ggallard@identicum.com>"
 
 RUN yum -y install unzip
 COPY --from=build-env /workspace/demoapp/app/target/oidc-demoapp-c2id.war /tmp/
