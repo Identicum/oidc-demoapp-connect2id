@@ -29,7 +29,7 @@
 		</init-param>
 		<init-param>
 			<param-name>scopes</param-name>
-			<param-value>${scopes}</param-value>
+			<param-value>${oidc.scopes}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>appPostLogoutRedirectURI</param-name>

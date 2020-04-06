@@ -40,7 +40,7 @@ Run the image, binding associated ports, and defining your custom variables as e
 
     docker run -d \
         -p 8080:8080 \
-        -e "JAVA_OPTS=-Doidc.discovery_endpoint='${DISCOVERY_ENDPOINT}' -Doidc.client_id='${CLIENT_ID}' -Doidc.client_secret='${CLIENT_SECRET}' -Doidc.redirect_uri='${REDIRECT_URI}' -Dscopes='${SCOPES}' -Doidc.post_logout_redirect_uri='${LOGOUT_REDIRECT_URI}' -Doidc.auth_request_uri_param='${ADDTL_AUTHORIZE_PARAMS}' -Doidc.enable_request_parameter='${ENABLE_REQUEST_PARAMETER}' -Doidc.request_object_signing_alg='${REQUEST_OBJECT_SIGNING_ALG}' -Doidc.skip_ssl_cert_validation='${SKIP_SSL_CERT_VALIDATION}'" \
+        -e "JAVA_OPTS=-Doidc.discovery_endpoint='${DISCOVERY_ENDPOINT}' -Doidc.client_id='${CLIENT_ID}' -Doidc.client_secret='${CLIENT_SECRET}' -Doidc.redirect_uri='${REDIRECT_URI}' -Doidc.scopes='${SCOPES}' -Doidc.post_logout_redirect_uri='${LOGOUT_REDIRECT_URI}' -Doidc.auth_request_uri_param='${ADDTL_AUTHORIZE_PARAMS}' -Doidc.enable_request_parameter='${ENABLE_REQUEST_PARAMETER}' -Doidc.request_object_signing_alg='${REQUEST_OBJECT_SIGNING_ALG}' -Doidc.skip_ssl_cert_validation='${SKIP_SSL_CERT_VALIDATION}'" \
         identicum/oidc-demoapp-connect2id
 
 #### Or Run the container mounting your custom web.xml
