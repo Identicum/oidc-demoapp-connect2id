@@ -1,40 +1,55 @@
 <% 
-	if(session != null)
-	{	
-		session.removeAttribute("access_token");
-		session.removeAttribute("id_token");
-		session.invalidate();
-	}
+if(session != null)
+{	
+	session.removeAttribute("access_token");
+	session.removeAttribute("id_token");
+	session.invalidate();
+}
 %>
 <html>
-<head>
-	 <meta charset="utf-8">
-	 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-	 <title>Demo App</title>
-	 <link href="resources/css/bootstrap.min.css" rel="stylesheet" >
-	 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
-	 <script src="resources/js/jquery-3.2.1.slim.min.js"></script>
-	 <script src="resources/js/popper.min.js"></script>
-	 <script src="resources/js/bootstrap.min.js"></script>
-</head>
-<body>
-   	<div class="navbar fixed-top">
-	    <div class="container">
-	        <div class="navbar-header">
-	            <a class="navbar-brand" rel="home" href="#" title="Personal">
-	                <img style="max-width:100px; margin-top: -7px;" src="resources/img/logo.png">  
-	            </a>
-	        </div>
-	        <div class="navbar-nav">
-	        	<a class="nav-item" href="menu/index.jsp"><span class="fa fa-sign-in"></span> Login</a>
-	        </div>	
-   		 </div>
-   	</div>	 
-	<div class="container" style="margin-top:6%;">
-			<div class="alert alert-success alert-dismissible" role="alert">
-	  			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  			Session has ended
+	<head>
+		 <meta charset="utf-8">
+		 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	   <meta name="viewport" content="width=device-width, initial-scale=1">
+		 <title>Demo App</title>
+		 <link href="resources/css/bootstrap.min.css" rel="stylesheet" >
+		 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+		 <script src="resources/js/jquery-3.2.1.slim.min.js"></script>
+		 <script src="resources/js/popper.min.js"></script>
+		 <script src="resources/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container h-100">
+			<div class="row h-100 justify-content-center align-items-center">
+				<div class="d-flex flex-column mb-3">
+				  <div style="padding-bottom: 20px">Session has ended</div>
+				  <div class="text-center"><a class="login" href="menu/index.jsp">Login</a></div>
+				</div>
 			</div>
-	</div>
-</body>
+		</div>
+		<style>
+			body {
+				background-color: whitesmoke;
+			}
+			a.login {
+		    color: #007bff;
+		    text-decoration: none;
+		    background-color: transparent;
+		    border: 2px solid #007bff;
+		    display: inline-block;
+		    width: 100px;
+		    height: 100px;
+		    border-radius: 100%;
+		    text-align: center;
+		    line-height: 100px;
+		    text-transform: uppercase;
+		    text-decoration: none;
+			}
+
+			a.login:hover {
+		    background-color: #007bff;
+		    color: white;
+		  }
+		</style>
+	</body>
+</html>
