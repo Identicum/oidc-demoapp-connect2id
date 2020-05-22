@@ -11,5 +11,6 @@ FROM tomcat:8-jdk11-openjdk-slim
 LABEL maintainer="Gustavo J Gallardo <ggallard@identicum.com>"
 
 COPY --from=build-env /workspace/demoapp/app/target/oidc-demoapp-c2id.war ./webapps/ROOT.war
-
+RUN apt-get update && \
+	apt-get install -y curl
 HEALTHCHECK --timeout=5s CMD curl --fail http://localhost:8080/ || exit 1
