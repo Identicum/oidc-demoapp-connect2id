@@ -39,9 +39,9 @@ The demo app can run as a Docker container, with your custom variables as JAVA_O
     export CLIENT_ID="*some_client_id*"
     # this variable is optional. For public client the app will use Authorization Code Flow with PCKE.
     export CLIENT_SECRET="*some_client_secret*"
-    export REDIRECT_URI="https://demoapp.identicum.com/oidc-demoapp-c2id/oauth/callback"
+    export REDIRECT_URI="https://demoapp.identicum.com/oauth/callback"
     export SCOPES="openid,profile"
-    export LOGOUT_REDIRECT_URI="https://demoapp.identicum.com/oidc-demoapp-c2id/logout.jsp"
+    export LOGOUT_REDIRECT_URI="https://demoapp.identicum.com/logout.jsp"
     # this variable allows you to add additional parameters to the redirect to the authorization_endpoint.
     # possible values are: "acr_values=u2f", "acr_values=u2f otp&prompt=login"
     export ADDTL_AUTHORIZE_PARAMS=
