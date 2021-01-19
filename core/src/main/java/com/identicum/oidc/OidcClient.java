@@ -460,7 +460,8 @@ public class OidcClient {
 
 	public JSONObject requestTokenInfo(BearerAccessToken accessToken)
 	{
-		TokenIntrospectionRequest tokenInfoReq = new TokenIntrospectionRequest(providerMetadata.getIntrospectionEndpointURI(), accessToken);
+		ClientSecretBasic clientSecretBasic = new ClientSecretBasic(this.clientId, this.clientSecret);
+		TokenIntrospectionRequest tokenInfoReq = new TokenIntrospectionRequest(providerMetadata.getIntrospectionEndpointURI(), clientSecretBasic, accessToken);
 		HTTPResponse tokenInfoHTTPResp = null;
 		TokenIntrospectionResponse tokenInfoResponse = null;
 		try
