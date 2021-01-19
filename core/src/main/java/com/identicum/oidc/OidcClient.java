@@ -29,17 +29,8 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.AuthorizationCode;
-import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
-import com.nimbusds.oauth2.sdk.AuthorizationRequest;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.AuthorizationRequest.Builder;
-import com.nimbusds.oauth2.sdk.ErrorObject;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.ResponseType;
-import com.nimbusds.oauth2.sdk.Scope;
-import com.nimbusds.oauth2.sdk.TokenErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenRequest;
-import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -465,6 +456,34 @@ public class OidcClient {
 
 		UserInfoSuccessResponse successResponse = (UserInfoSuccessResponse) userInfoResponse;
 		return successResponse.getUserInfo().toJSONObject();
+	}
+
+	public JSONObject requestTokenInfo(BearerAccessToken accessToken)
+	{
+		TokenIntrospectionRequest tokenInfoReq = new TokenIntrospectionRequest(providerMetadata.getIntrospectionEndpointURI(), accessToken);
+		HTTPResponse tokenInfoHTTPResp = null;
+		TokenIntrospectionResponse tokenInfoResponse = null;
+		try
+		{
+			HTTPRequest request  = (this.skipSSLCertValidation) ? disableSSLCertValidation(tokenInfoReq.toHTTPRequest()) : tokenInfoReq.toHTTPRequest();
+			tokenInfoHTTPResp = request.send();
+			tokenInfoResponse = TokenIntrospectionResponse.parse(tokenInfoHTTPResp);
+		}
+		catch (Exception e)
+		{
+			logger.error("Error getting Token Info: " + e.getMessage(), e);
+			throw new RuntimeException("Error getting tokeninfo", e);
+		}
+
+		if (tokenInfoResponse instanceof TokenIntrospectionErrorResponse)
+		{
+			ErrorObject error = ((TokenIntrospectionErrorResponse) tokenInfoResponse).getErrorObject();
+			logger.error("Error getting Token Info: " + error.getDescription());
+			throw new RuntimeException("Error getting tokeninfo: " + error.getCode() + " - " + error.getDescription());
+		}
+
+		TokenIntrospectionSuccessResponse successResponse = (TokenIntrospectionSuccessResponse) tokenInfoResponse;
+		return successResponse.toJSONObject();
 	}
 
 	@Override

@@ -39,6 +39,7 @@ public class OidcFilter implements Filter
 	public final static String ID_TOKEN = "id_token";
 	public final static String USER_CLAIMS= "user_claims";
 	public final static String USERINFO = "userinfo";
+	public final static String TOKENINFO = "tokeninfo";
 	private final static String GOTO = "com.identicum.oauth.goto";
 	
 	private OidcClient client = null;
@@ -98,7 +99,8 @@ public class OidcFilter implements Filter
 				//{	
 				logger.info("Requesting User info");
 				//TODO: Check if access token has JWT format
-				mySession.setAttribute(USERINFO, this.client.requestUserInfo(accessToken));								
+				mySession.setAttribute(USERINFO, this.client.requestUserInfo(accessToken));
+				mySession.setAttribute(TOKENINFO, this.client.requestTokenInfo(accessToken));
 				//}
 
 				// Share oidc client configuration for OIDC Logout Filter

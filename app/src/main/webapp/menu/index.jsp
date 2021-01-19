@@ -7,6 +7,7 @@
 	JWT idToken = (JWT) session.getAttribute("id_token");
 	String accessToken = (String) session.getAttribute("access_token");
 	JSONObject userinfoJson = (JSONObject) session.getAttribute("userinfo");
+	JSONObject tokeninfoJson = (JSONObject) session.getAttribute("tokeninfo");
 	JSONObject tokenClaims = idToken.getJWTClaimsSet().toJSONObject();
 	JSONObject headerClaims = idToken.getHeader().toJSONObject();
 
@@ -77,6 +78,9 @@
 		<li class="nav-item">
 			<a class="nav-link" id="userinfo-tab" data-toggle="tab" href="#userinfo" role="tab" aria-controls="userinfo" aria-selected="true">User Info</a>
 		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="tokeninfo-tab" data-toggle="tab" href="#tokeninfo" role="tab" aria-controls="tokeninfo" aria-selected="true">Token Info</a>
+		</li>
 	</ul>
 	<div class="tab-content" id="myTabContent" style="padding-top:20px">
 		<div class="tab-pane fade show active" id="idtokenformattable" role="tabpanel" aria-labelledby="idtoken-tab">
@@ -146,6 +150,9 @@
 		</div>
 		<div class="tab-pane" id="userinfo" role="tabpanel" aria-labelledby="userinfo">
 			<code><%=userinfoJson.toJSONString()%></code>	
+		</div>
+		<div class="tab-pane" id="tokeninfo" role="tabpanel" aria-labelledby="tokeninfo">
+			<code><%=tokeninfoJson.toJSONString()%></code>
 		</div>
 	</div>
  </div>	
