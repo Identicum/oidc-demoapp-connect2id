@@ -462,6 +462,7 @@ public class OidcClient {
 	public JSONObject requestTokenInfo(BearerAccessToken accessToken)
 	{
 		ClientSecretBasic clientSecretBasic = new ClientSecretBasic(this.clientId, this.clientSecret);
+		logger.debug("Getting introspection endpoint.");
 		URI introspectionEndpoint = providerMetadata.getIntrospectionEndpointURI();
 		logger.debug("Introspection endpoint: " + introspectionEndpoint.toString());
 		if (introspectionEndpoint.toString()=="")
