@@ -38,7 +38,7 @@ The demo app can run as a Docker container, with your custom variables as JAVA_O
     export DISCOVERY_ENDPOINT="https://idp.identicum.com/.well-known/openid-configuration"
     export CLIENT_ID="*some_client_id*"
 
-    # this variable is optional. For public client the app will use Authorization Code Flow with PCKE.
+    # This variable is optional. For public client the app will use Authorization Code Flow with PCKE.
     export CLIENT_SECRET="*some_client_secret*"
 
     export REDIRECT_URI="https://demoapp.identicum.com/oauth/callback"
