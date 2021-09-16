@@ -466,7 +466,9 @@ public class OidcClient {
 		logger.debug("Introspection endpoint: " + introspectionEndpoint.toString());
 		if (introspectionEndpoint.toString()=="")
 		{
-			return new JSONObject();
+			JSONObject jsonResponse = new JSONObject();
+			jsonResponse.put("error", "OP did not provide introspection_endpoint.");
+			return jsonResponse;
 		}
 		TokenIntrospectionRequest tokenInfoReq = new TokenIntrospectionRequest(introspectionEndpoint, clientSecretBasic, accessToken);
 		HTTPResponse tokenInfoHTTPResp = null;
