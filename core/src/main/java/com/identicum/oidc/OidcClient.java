@@ -464,7 +464,7 @@ public class OidcClient {
 		ClientSecretBasic clientSecretBasic = new ClientSecretBasic(this.clientId, this.clientSecret);
 		logger.debug("Getting introspection endpoint.");
 		URI introspectionEndpoint = providerMetadata.getIntrospectionEndpointURI();
-		if (introspectionEndpoint != null)
+		if (introspectionEndpoint == null)
 		{
 			logger.debug("OP did not provide introspection_endpoint.");
 			JSONObject jsonResponse = new JSONObject();
