@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+    - main
+env:
+  CONTAINER_IMAGE: identicum/${{github.event.repository.name}}:latest
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Docker Hub login
+      run: docker login -u ${{secrets.DOCKER_HUB_USERNAME}} -p ${{secrets.DOCKER_HUB_PASSWORD}}
+    - name: Build image 
+      run: docker build -t $CONTAINER_IMAGE .
+      working-directory: .
+    - name: Push to Docker Hub
+      run: docker push $CONTAINER_IMAGE
