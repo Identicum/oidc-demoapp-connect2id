@@ -440,6 +440,7 @@ public class OidcClient {
 			HTTPRequest request  = (this.skipSSLCertValidation) ? disableSSLCertValidation(userInfoReq.toHTTPRequest()) : userInfoReq.toHTTPRequest();	
 			userInfoHTTPResp = request.send();
 			userInfoResponse = UserInfoResponse.parse(userInfoHTTPResp);
+			logger.debug("Userinfo response: " + userInfoResponse);
 		}
 		catch (Exception e)
 		{
@@ -472,15 +473,15 @@ public class OidcClient {
 		}
 		catch (Exception e)
 		{
-			logger.error("Error getting Token Info: " + e.getMessage(), e);
-			throw new RuntimeException("Error getting tokeninfo", e);
+			logger.error("Generic exception getting Token Info: " + e.getMessage(), e);
+			throw new RuntimeException("Generic exception getting Token Info: ", e);
 		}
 
 		if (tokenInfoResponse instanceof TokenIntrospectionErrorResponse)
 		{
 			ErrorObject error = ((TokenIntrospectionErrorResponse) tokenInfoResponse).getErrorObject();
-			logger.error("Error getting Token Info: " + error.getDescription());
-			throw new RuntimeException("Error getting tokeninfo: " + error.getCode() + " - " + error.getDescription());
+			logger.error("TokenIntrospectionError getting Token Info: " + error.getDescription());
+			throw new RuntimeException("TokenIntrospectionError getting Token Info: " + error.getCode() + " - " + error.getDescription());
 		}
 
 		TokenIntrospectionSuccessResponse successResponse = (TokenIntrospectionSuccessResponse) tokenInfoResponse;
