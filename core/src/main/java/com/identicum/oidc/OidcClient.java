@@ -439,8 +439,8 @@ public class OidcClient {
 		{	
 			HTTPRequest request  = (this.skipSSLCertValidation) ? disableSSLCertValidation(userInfoReq.toHTTPRequest()) : userInfoReq.toHTTPRequest();	
 			userInfoHTTPResp = request.send();
+			logger.debug("Userinfo response: " + userInfoHTTPResp.getContent());
 			userInfoResponse = UserInfoResponse.parse(userInfoHTTPResp);
-			logger.debug("Userinfo response: " + userInfoResponse);
 		}
 		catch (Exception e)
 		{
