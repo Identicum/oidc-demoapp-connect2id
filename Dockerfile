@@ -1,4 +1,4 @@
-FROM identicum/centos-java-maven as build-env
+FROM ghcr.io/identicum/centos-java-maven as build-env
 WORKDIR /workspace/demoapp
 ADD app ./app
 ADD core ./core
@@ -7,8 +7,7 @@ RUN mvn install -DskipTests
 
 # ############################################################################
 # Build runtime image
-FROM tomcat:8-jdk11-openjdk-slim
-LABEL maintainer="Gustavo J Gallardo <ggallard@identicum.com>"
+FROM ghcr.io/identicum/tomcat:latest
 
 COPY --from=build-env /workspace/demoapp/app/target/oidc-demoapp-c2id.war ./webapps/ROOT.war
 RUN apt-get update && \
